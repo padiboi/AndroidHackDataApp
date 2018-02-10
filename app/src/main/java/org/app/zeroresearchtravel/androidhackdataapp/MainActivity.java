@@ -39,8 +39,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -341,7 +343,7 @@ public class MainActivity extends Activity
                 return getDataFromApi();
             } catch (Exception e) {
                 mLastError = e;
-                cancel(true);
+                //cancel(true);
                 return null;
             }
         }
@@ -356,7 +358,7 @@ public class MainActivity extends Activity
             DateTime now = new DateTime(System.currentTimeMillis());
             List<String> eventStrings = new ArrayList<String>();
             Events events = mService.events().list("primary")
-                    .setMaxResults(10)
+                    .setMaxResults(100)
                     .setTimeMin(now)
                     .setOrderBy("startTime")
                     .setSingleEvents(true)
@@ -365,13 +367,20 @@ public class MainActivity extends Activity
 
             for (Event event : items) {
                 DateTime start = event.getStart().getDateTime();
+                DateTime end = null;
+                int diffInDays = 0;
+
                 if (start == null) {
                     // All-day events don't have start times, so just use
                     // the start date.
                     start = event.getStart().getDate();
+                    end = event.getEnd().getDate();
+
+                    diffInDays = (int) ((end.getValue() - start.getValue()) / (1000 * 60 * 60 * 24));
+
                 }
                 if(event.getSummary().toLowerCase().contains("holiday") || event.getSummary().toLowerCase().contains("leave"))
-                    eventStrings.add(String.format("%s (%s)", event.getSummary(), start));
+                    eventStrings.add(String.format("%s (%s - %s) %d days", event.getSummary(), start, end, diffInDays));
             }
             return eventStrings;
         }
