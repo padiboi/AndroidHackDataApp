@@ -85,12 +85,12 @@ public class MainActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         mCallApiButton = new Button(this);
-        mCallApiButton.setText(BUTTON_TEXT);
+        mCallApiButton.setText("Allow calendar access");
         mCallApiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCallApiButton.setEnabled(false);
-                mOutputText.setText("");
+                //mOutputText.setText("");
                 getResultsFromApi();
                 mCallApiButton.setEnabled(true);
             }
@@ -102,12 +102,10 @@ public class MainActivity extends Activity
         mOutputText.setPadding(16, 16, 16, 16);
         mOutputText.setVerticalScrollBarEnabled(true);
         mOutputText.setMovementMethod(new ScrollingMovementMethod());
-        mOutputText.setText(
-                "Click the \'" + BUTTON_TEXT +"\' button to test the API.");
         activityLayout.addView(mOutputText);
 
         mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Calling Google Calendar API ...");
+        mProgress.setMessage("Syncing with Google Calendar");
 
         setContentView(activityLayout);
 
@@ -220,15 +218,6 @@ public class MainActivity extends Activity
                 break;
         }
     }
-
-    /**
-     * Respond to requests for permissions at runtime for API 23 and above.
-     * @param requestCode The request code passed in
-     *     requestPermissions(android.app.Activity, String, int, String[])
-     * @param permissions The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions
-     *     which is either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -381,7 +370,7 @@ public class MainActivity extends Activity
 
                 }
                 if(event.getSummary().toLowerCase().contains("holiday") || event.getSummary().toLowerCase().contains("leave"))
-                    eventStrings.add(String.format("%s (%s - %s) %d days", event.getSummary(), start, end, diffInDays));
+                    eventStrings.add(String.format("%s|%s|%s|%d|||", event.getSummary(), start, end, diffInDays));
             }
             return eventStrings;
         }
@@ -400,17 +389,18 @@ public class MainActivity extends Activity
             if (output == null || output.size() == 0) {
                 mOutputText.setText("No results returned.");
             } else {
-
                 StringBuffer buf = new StringBuffer();
                 for(String s : output) {
                     buf.append(s);
                 }
-                SharedPreferences editor = getApplicationContext().getSharedPreferences("calender", MODE_PRIVATE);
+                SharedPreferences editor = getApplicationContext().getSharedPreferences("calendar", MODE_PRIVATE);
                 editor.edit().putString("string", buf.toString());
                 editor.edit().commit();
                 Log.i("kinks", "Written to prefs");
-                output.add(0, "Data retrieved using the Google Calendar API:");
-                mOutputText.setText(TextUtils.join("\n", output));
+                Intent intent = new Intent(MainActivity.this, InputActivity.class);
+                startActivity(intent);
+                //output.add(0, "Data retrieved using the Google Calendar API:");
+                //mOutputText.setText(TextUtils.join("\n", output));
             }
         }
 
