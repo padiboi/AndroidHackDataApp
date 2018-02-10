@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -395,9 +396,19 @@ public class MainActivity extends Activity
         @Override
         protected void onPostExecute(List<String> output) {
             mProgress.hide();
+
             if (output == null || output.size() == 0) {
                 mOutputText.setText("No results returned.");
             } else {
+
+                StringBuffer buf = new StringBuffer();
+                for(String s : output) {
+                    buf.append(s);
+                }
+                SharedPreferences editor = getApplicationContext().getSharedPreferences("calender", MODE_PRIVATE);
+                editor.edit().putString("string", buf.toString());
+                editor.edit().commit();
+                Log.i("kinks", "Written to prefs");
                 output.add(0, "Data retrieved using the Google Calendar API:");
                 mOutputText.setText(TextUtils.join("\n", output));
             }
