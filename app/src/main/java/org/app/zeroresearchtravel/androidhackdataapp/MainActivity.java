@@ -40,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -365,12 +366,11 @@ public class MainActivity extends Activity
                     // the start date.
                     start = event.getStart().getDate();
                     end = event.getEnd().getDate();
-
                     diffInDays = (int) ((end.getValue() - start.getValue()) / (1000 * 60 * 60 * 24));
 
                 }
                 if(event.getSummary().toLowerCase().contains("holiday") || event.getSummary().toLowerCase().contains("leave"))
-                    eventStrings.add(String.format("%s|%s|%s|%d|||", event.getSummary(), start, end, diffInDays));
+                    eventStrings.add(String.format("%s|%s|%s|%d days", event.getSummary(), start, end, diffInDays));
             }
             return eventStrings;
         }
@@ -391,12 +391,16 @@ public class MainActivity extends Activity
             } else {
                 StringBuffer buf = new StringBuffer();
                 for(String s : output) {
+                    buf.append("\n");
                     buf.append(s);
                 }
-                SharedPreferences editor = getApplicationContext().getSharedPreferences("calendar", MODE_PRIVATE);
-                editor.edit().putString("string", buf.toString());
-                editor.edit().commit();
-                Log.i("kinks", "Written to prefs");
+                mOutputText.setText(buf.toString());
+                SharedPreferences prefs = getApplicationContext().getSharedPreferences("calendar", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("calstring", buf.toString());
+                editor.commit();
+
+                Log.i("kinks", "Written to prefs" + buf.toString());
                 Intent intent = new Intent(MainActivity.this, InputActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

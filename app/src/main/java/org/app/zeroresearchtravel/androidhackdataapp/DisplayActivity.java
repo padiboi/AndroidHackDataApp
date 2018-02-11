@@ -6,8 +6,15 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -36,30 +43,47 @@ public class DisplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-        sharedPreferences = getSharedPreferences("Calendar", Context.MODE_PRIVATE);
+        sharedPreferences = getApplicationContext().getSharedPreferences("Calendar", Context.MODE_PRIVATE);
         try {
             getApiData();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        String cData = sharedPreferences.getString("calstring", null);
+        if(cData!=null) {
+            Log.i("kinks", cData);
+            TextView calen = (TextView) findViewById(R.id.first_suggestion_card);
+            calen.setText(cData);
+        }
     }
 
     private void getApiData() throws IOException {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://app.blisteringly74.hasura-app.io/";
+
         int age = sharedPreferences.getInt("age", 0);
         int leaves = sharedPreferences.getInt("leaves", 0);
+        int budget = sharedPreferences.getInt("selectedBudgetItem", 0);
+        int gender = sharedPreferences.getInt("selectedGenderItem", 0);
+
         //TODO: ADD BUDGET, GENDER, AND ALTER URL
-        String spec = "https://api.havail.sabre.com/v1/lists/top/destinations?origin=&lookbackweeks=&topdestinations=1";
-        URL url = new URL(spec);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        if(conn.getResponseCode()!=200)//indicates server response is OK
-            throw new RuntimeException("Failed: HTTP error code: " + conn.getResponseCode());
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String output;
-        StringBuilder sb = new StringBuilder();
-        while((output = br.readLine())!=null) {
-            sb.append(output);
-        }
-        Gson gson = new Gson();
-        SuggestionData suggestionData = gson.fromJson(sb.toString(), SuggestionData.class);
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        //mTextView.setText("Response is: "+ response.substring(0,500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 }
