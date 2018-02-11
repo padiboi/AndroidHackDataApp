@@ -398,9 +398,8 @@ public class MainActivity extends Activity
                 editor.edit().commit();
                 Log.i("kinks", "Written to prefs");
                 Intent intent = new Intent(MainActivity.this, InputActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                //output.add(0, "Data retrieved using the Google Calendar API:");
-                //mOutputText.setText(TextUtils.join("\n", output));
             }
         }
 

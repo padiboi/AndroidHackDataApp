@@ -48,5 +48,16 @@
         app:layout_anchorGravity="bottom|center">
     </Spinner>
 
+    <Button
+        android:text="Get suggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:id="@+id/accepted_button"
+        android:layout_gravity="center"
+        app:layout_anchor="@id/budget_entry"
+        android:layout_marginTop="270dp"
+        app:layout_anchorGravity="bottom|center"/>
+
 
 </android.support.design.widget.CoordinatorLayout>
