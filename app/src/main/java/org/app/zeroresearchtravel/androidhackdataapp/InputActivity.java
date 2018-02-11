@@ -38,6 +38,15 @@ public class InputActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
+
+        //getting shared prefs
+        sharedPreferences = getSharedPreferences("calendar", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        if(sharedPreferences.getBoolean("dataInputDone", false)) {
+            Intent intent = new Intent(this, DisplayActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
         ageText = (EditText)findViewById(R.id.age_entry);
         leaveText = (EditText)findViewById(R.id.leaves_entry);
         //populating Spinner data
@@ -55,14 +64,11 @@ public class InputActivity extends AppCompatActivity {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         budgetSpinner.setAdapter(arrayAdapter);
         budgetSpinner.setSelection(0);
-
-        //getting shared prefs
-        sharedPreferences = getSharedPreferences("calendar", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
         breakStringData(sharedPreferences.getString("string", null));
         //event data obtained, adding user info
         Button acceptButton = (Button)findViewById(R.id.accepted_button);
         if(storeUserInfo()) {
+            editor.putBoolean("dataInputDone", true).commit();
             acceptButton.setVisibility(View.VISIBLE);
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
