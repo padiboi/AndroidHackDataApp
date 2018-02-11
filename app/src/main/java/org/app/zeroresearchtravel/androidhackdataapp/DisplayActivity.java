@@ -50,11 +50,11 @@ public class DisplayActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String cData = sharedPreferences.getString("calstring", null);
-        if(cData!=null) {
+        /*if(cData!=null) {
             Log.i("kinks", cData);
-            TextView calen = (TextView) findViewById(R.id.first_suggestion_card);
+            ..TextView calen = (TextView) findViewById(R.id.first_suggestion_card);
             calen.setText(cData);
-        }
+        }*/
     }
 
     private void getApiData() throws IOException {
