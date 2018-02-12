@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -86,6 +87,7 @@ public class MainActivity extends Activity
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         mCallApiButton = new Button(this);
+        mCallApiButton.setGravity(Gravity.CENTER);
         mCallApiButton.setText("Allow calendar access");
         mCallApiButton.setOnClickListener(new View.OnClickListener() {
             @Override

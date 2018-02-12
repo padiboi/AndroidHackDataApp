@@ -20,11 +20,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_item, parent, false);
-
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
-
-
     }
 
     @Override
@@ -41,8 +38,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         protected TextView textView;
         public ViewHolder(View itemView) {
             super(itemView);
-            textView =  (TextView) itemView.findViewById(R.id.list_item);
-
+            textView =  (TextView) itemView.findViewById(R.id.first_card_text);
         }
     }
 }
